@@ -52,4 +52,8 @@ DB_PASS=
 ```
 
 ## License
+<<<<<<< HEAD
 © [Riki Rhenaldi](https://github.com/Rikirhenaldi)
+=======
+© [Riki Rhenaldi](https://github.com/Rikirhenaldi)
+>>>>>>> 0c51f9bc4dac815bc03b7312d9dbb44084fed16e

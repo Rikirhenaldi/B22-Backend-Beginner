@@ -1,3 +1,4 @@
+/* eslint-disable comma-dangle */
 const db = require('../helpers/db')
 const table = 'categories'
 
@@ -7,7 +8,7 @@ const execPromise = promisify(db.query).bind(db)
 exports.createCategory = (data) => {
   return execPromise(`
   INSERT INTO ${table} ( category, created_at)
-  VALUES (?, ?)`, [data.category, data.created_at], )
+  VALUES (?, ?)`, [data.category, data.created_at])
 }
 
 exports.getCategory = () => {

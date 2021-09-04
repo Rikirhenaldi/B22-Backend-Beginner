@@ -1,8 +1,8 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-undef */
 const authControler = require('../src/controllers/auth')
 const sinon = require('sinon')
-const supertest = require('supertest')
-const { APP_URL } = process.env
-const { expect, assert } = require('chai')
+const { expect } = require('chai')
 const should = require('chai').should
 
 const mockingResponse = () => {

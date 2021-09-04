@@ -1,3 +1,6 @@
+/* eslint-disable no-unused-expressions */
+/* eslint-disable no-undef */
+/* eslint-disable no-unused-vars */
 const variantControler = require('../src/controllers/variant')
 const sinon = require('sinon')
 const supertest = require('supertest')
