@@ -16,7 +16,7 @@ exports.createTransaction = (req, res) => {
   }
   getProductsById(data.product_id.map(id => parseInt(id)), (err, items) => {
     if (err) {
-      console.log(err);
+      console.log(err)
       return response(res, 400, false, 'eror occurred')
     } else {
       const code = codeTransaction(APP_TRANSACTION_PREFIX, 1)
@@ -109,6 +109,9 @@ exports.updateUserProfile = (req, res) => {
       } else {
         return response(res, 402, false, 'You dont have permission to accsess this resource')
       }
+    }else{
+      console.log(err);
+      return response(res, 402, false, 'eror on query')
     }
   })
 }

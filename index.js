@@ -2,6 +2,7 @@ require('dotenv').config()
 
 const express = require('express')
 const bodyParser = require('body-parser')
+
 const app = express()
 const cors = require('cors')
 const { APP_UPLOADS_ROUTE, APP_UPDATE_ROUTE, APP_UPLOADS_PATH, PORT } = process.env
@@ -12,10 +13,22 @@ app.use(cors())
 app.use(APP_UPLOADS_ROUTE, express.static(APP_UPLOADS_PATH))
 app.use(APP_UPDATE_ROUTE, express.static(APP_UPLOADS_PATH))
 
+const server = require("http").createServer(app);
+const io = require("socket.io")(server, {
+  cors: {
+    origin: ['http://localhost:3000', 'http://localhost:8080']
+  }
+})
+io.on("connection", () => { console.log('connection socket exist')})
+
+const socket = require('./src/middlewares/socket')
+app.use(socket(io))
+
 const productRouter = require('./src/routes/products')
 const categoriesRouter = require('./src/routes/categories')
 const variantsRouter = require('./src/routes/variants')
 const authRouter = require('./src/routes/auth')
+const chatRouter = require('./src/routes/chats')
 const transactionRouter = require('./src/routes/transactions')
 const auth = require('./src/middlewares/auth')
 
@@ -24,6 +37,7 @@ app.use('/category', categoriesRouter)
 app.use('/variant', variantsRouter)
 app.use('/auth', authRouter)
 app.use('/private', auth, transactionRouter) // authnya dihapus dulu tadi kalaugk ada authnya.
+app.use('/chats', auth, chatRouter)
 
 app.get('/', (req, res) => {
   const data = {
@@ -33,7 +47,7 @@ app.get('/', (req, res) => {
   return res.json(data)
 })
 
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`App runing on port ${PORT}`)
 })
 

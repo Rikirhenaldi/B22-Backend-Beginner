@@ -1,7 +1,7 @@
-exports.response = (res, status = 200, succsess = true, message = 'this is message', results, pageInfo) => {
+exports.response = (res, status = 200, success = true, message = 'this is message', results, pageInfo) => {
   return res.status(status).json({
     status,
-    succsess,
+    success,
     message,
     results,
     pageInfo

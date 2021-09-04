@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 const productModel = require('../models/products')
 
 const timeHelper = require('../helpers/date')
@@ -37,11 +38,11 @@ exports.getProducts = (req, res) => {
         message: 'List of Products',
         results
       })
-    }else{
-      console.log(err);
+    } else {
+      console.log(err)
       return res.status(500).json({
         succsess: false,
-        message: 'an error occured',
+        message: 'an error occured'
       })
     }
   })
