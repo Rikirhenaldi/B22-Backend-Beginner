@@ -26,10 +26,10 @@ describe('create variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(false)
       variantData.json.args[0][0].message.should.to.be.equal('request errors')
       variantData.status.args[0][0].should.to.be.equal(400)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 
   it('variant name length more than or equal 3', (done) => {
@@ -43,10 +43,10 @@ describe('create variants', () => {
       expect(variantData.json.args[0][0].success).to.be.false
       variantData.json.args[0][0].message.should.to.be.equal('name of variant must be specifict')
       variantData.status.args[0][0].should.to.be.equal(400)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 
   it('create variant successfully', (done) => {
@@ -60,10 +60,10 @@ describe('create variants', () => {
       expect(variantData.json.args[0][0].success).to.be.true
       variantData.json.args[0][0].message.should.to.be.equal('Variant Created Succsessfully')
       variantData.status.args[0][0].should.to.be.equal(200)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 })
 
@@ -79,10 +79,10 @@ describe('get variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(true)
       variantData.json.args[0][0].message.should.to.be.equal('list of all variant')
       variantData.status.args[0][0].should.to.be.equal(200)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 
   it('variant not found', (done) => {
@@ -96,10 +96,10 @@ describe('get variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(false)
       variantData.json.args[0][0].message.should.to.be.equal('variant not found')
       variantData.status.args[0][0].should.to.be.equal(400)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 
   it('get varian by name', (done) => {
@@ -113,10 +113,10 @@ describe('get variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(true)
       variantData.json.args[0][0].message.should.to.be.equal(`list of variant from ${req.query.search}`)
       variantData.status.args[0][0].should.to.be.equal(200)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 })
 
@@ -135,10 +135,10 @@ describe('update variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(false)
       variantData.json.args[0][0].message.should.to.be.equal('Cant update item cause item not found')
       variantData.status.args[0][0].should.to.be.equal(404)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 
   it('update variant successfully', (done) => {
@@ -155,10 +155,10 @@ describe('update variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(true)
       variantData.json.args[0][0].message.should.to.be.equal('Variant updated succsessfuly')
       variantData.status.args[0][0].should.to.be.equal(200)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 })
 
@@ -174,16 +174,16 @@ describe('delete variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(false)
       variantData.json.args[0][0].message.should.to.be.equal('variant not found')
       variantData.status.args[0][0].should.to.be.equal(404)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 
   it('delete variant successfully', (done) => {
     const req = {
       params: {
-        id: 112
+        id: 113
       }
     }
     const res = mockingResponse()
@@ -191,9 +191,9 @@ describe('delete variants', () => {
       variantData.json.args[0][0].success.should.to.be.equal(true)
       variantData.json.args[0][0].message.should.to.be.equal('Variant has been Deleted')
       variantData.status.args[0][0].should.to.be.equal(200)
+      done()
     }).catch((err) => {
-      console.log(err)
+      done(err)
     })
-    done()
   })
 })

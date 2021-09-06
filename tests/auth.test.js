@@ -34,6 +34,18 @@ describe('auth register', () => {
     done()
   })
 
+  it('phone number length less than 10 with supertest', (done) => {
+    supertest(APP_URL)
+      .post('/auth/register')
+      .send('email=joy@gmail.com&password=123456&phoneNumber=0817918')
+      .expect(400)
+      .end((err, res) => {
+        expect(res.body.success).to.be.false
+        expect(res.body.message).to.be.equal('input format number is wrong, digit number must be greater than 10')
+      })
+    done()
+  })
+
   it('password length less than 5', (done) => {
     const req = {
       body: {
