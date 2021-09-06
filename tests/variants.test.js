@@ -4,7 +4,6 @@
 const variantControler = require('../src/controllers/variant')
 const sinon = require('sinon')
 const supertest = require('supertest')
-const { APP_URL } = process.env
 const { expect, assert } = require('chai')
 const should = require('chai').should
 
@@ -184,7 +183,7 @@ describe('delete variants', () => {
   it('delete variant successfully', (done) => {
     const req = {
       params: {
-        id: 110
+        id: 112
       }
     }
     const res = mockingResponse()

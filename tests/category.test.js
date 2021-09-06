@@ -151,7 +151,7 @@ describe('delete category', () => {
   it('delete category successfully', (done) => {
     const req = {
       params: {
-        id: 20
+        id: 21
       }
     }
     let res = mockingResponse()

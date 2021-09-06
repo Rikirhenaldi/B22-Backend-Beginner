@@ -4,6 +4,8 @@ const authControler = require('../src/controllers/auth')
 const sinon = require('sinon')
 const { expect } = require('chai')
 const should = require('chai').should
+const supertest = require('supertest')
+const { APP_URL } = process.env
 
 const mockingResponse = () => {
   const res = {}
@@ -69,6 +71,18 @@ describe('auth register', () => {
     }).catch((err) => {
       console.log(err)
     })
+    done()
+  })
+
+  it('Register successfully with supertest', (done) => {
+    supertest(APP_URL)
+      .post('/auth/register')
+      .send('email=joy@gmail.com&password=123456&phoneNumber=08179187686')
+      .expect(200)
+      .end((err, res) => {
+        expect(res.body.success).to.be.true
+        expect(res.body.message).to.be.equal('Register Succsessfully')
+      })
     done()
   })
 })
