@@ -2,6 +2,7 @@ const chatModels = require('../models/chats')
 const { response } = require('../helpers/standardResponse')
 const socket = require('../middlewares/socket')
 const { APP_URL } = process.env
+const upload = require('../helpers/upload')
 
 exports.createMessage = (req, res) => {
   const data = req.body
@@ -30,7 +31,7 @@ exports.sendMessage = (req, res) => {
           console.log(err)
           return response(res, 401, false, 'an error occurred')
         } else {
-          const sendingData = { message: data.message, sender: user.phoneNumber, recipient: data.recipient }
+          const sendingData = { message: data.message, sender: user.phoneNumber, recipient: data.recipient, deletedAt: 0 }
           chatModels.createMessage(sendingData, (err, results) => {
             if (err) {
               console.log(err)
@@ -41,6 +42,47 @@ exports.sendMessage = (req, res) => {
                 sender: sendingData.sender
               })
               return response(res, 200, true, 'message sended successfully', sendingData)
+            }
+          })
+        }
+      })
+    }
+  })
+}
+
+exports.sendMessageImage = (req, res) => {
+  const data = req.body
+  chatModels.getUserSenderById(req.authUser.id, (err, results) => {
+    if (err) {
+      console.log(err)
+      return response(res, 401, false, 'You must be login first')
+    } else {
+      const user = results[0]
+      const updateData = { isLatest: 0, sender: user.phoneNumber, recipient: data.recipient, sender: data.recipient, recipient: user.phoneNumber }
+      console.log(updateData)
+      chatModels.updateIsLatest(updateData, (err, results) => {
+        if (err) {
+          console.log(err)
+          return response(res, 401, false, 'an error occurred')
+        } else {
+          upload.uploadFilterImg(req, res, err => {
+            if (err) {
+              response(res, 401, false, 'an errors ocured')
+            } else {
+              data.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
+              const sendingData = { img: data.img, sender: user.phoneNumber, recipient: req.body.recipient }
+              chatModels.createMessageImage(sendingData, (err, results) => {
+                if (err) {
+                  console.log(err)
+                  return response(res, 401, false, 'Failed to send message')
+                } else {
+                  req.socket.emit(sendingData.recipient, {
+                    message: sendingData.img,
+                    sender: sendingData.sender
+                  })
+                  return response(res, 200, true, 'message sended successfully', sendingData)
+                }
+              })
             }
           })
         }

@@ -82,35 +82,39 @@ exports.getProfile = (req, res) => {
   })
 }
 
-const userPicture = require('../helpers/upload').single('img')
+// const userPicture = require('../helpers/upload').single('img')
+const upload = require('../helpers/upload')
 
 exports.updateUserProfile = (req, res) => {
   getUserById(req.authUser.id, (err, results, _fields) => {
     if (!err) {
       if (results.length > 0) {
-        userPicture(req, res, err => {
-          if (err) throw err
-          req.body.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
-          const { img, address, name, email, phoneNumber } = req.body
-          const updateData = { id: req.authUser.id, img, address, name, email, phoneNumber, updated_at: timeHelper.date() }
-          updateProfile(updateData, (err, results, _fields) => {
-            if (err) {
-              console.log(err)
-              return response(res, 500, false, 'an Error accurred')
-            } else {
-              console.log(updateData)
-              if (updateData.img !== null && !updateData.img.startsWith('http')) {
-                updateData.img = `${process.env.APP_URL}${updateData.img}`
+        upload.uploadFilterImg(req, res, err => {
+          if (err) {
+            response(res, 401, false, 'an errors ocured')
+          } else {
+            req.body.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
+            const { img, address, name, email, phoneNumber } = req.body
+            const updateData = { id: req.authUser.id, img, address, name, email, phoneNumber, updated_at: timeHelper.date() }
+            updateProfile(updateData, (err, results, _fields) => {
+              if (err) {
+                console.log(err)
+                return response(res, 500, false, 'an Error accurred')
+              } else {
+                console.log(updateData)
+                if (updateData.img !== null && !updateData.img.startsWith('http')) {
+                  updateData.img = `${process.env.APP_URL}${updateData.img}`
+                }
+                return response(res, 200, true, 'Profile Updated Sucsessfully', updateData)
               }
-              return response(res, 200, true, 'Profile Updated Sucsessfully', updateData)
-            }
-          })
+            })
+          }
         })
       } else {
         return response(res, 402, false, 'You dont have permission to accsess this resource')
       }
-    }else{
-      console.log(err);
+    } else {
+      console.log(err)
       return response(res, 402, false, 'eror on query')
     }
   })

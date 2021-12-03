@@ -15,6 +15,12 @@ exports.createProductTransaction = (data, cb) => {
   `, [data.name, data.price, data.variants, data.amount, data.id_products, data.id_transaction], cb)
 }
 
+exports.deleteHistory = (id, cb) => {
+  db.query(`
+  DELETE FROM transactions WHERE id = ?
+  `, [id], cb)
+}
+
 // exports.getHistoryTransaction = (id, cb) => {
 //   connection.query(`
 //   SELECT users.id, users.address, ${table}.id as id_transaction, product_transactions.name as name_product, product_transactions.price as price_product

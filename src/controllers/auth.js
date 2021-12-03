@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
       const results = await userModel.createUserPromise(data)
       if (results.affectedRows) {
         return response(res, 200, true, 'Register Succsessfully')
-      }else{
+      } else {
         return response(res, 400, false, 'register failed')
       }
     }

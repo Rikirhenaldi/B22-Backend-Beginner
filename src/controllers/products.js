@@ -6,23 +6,27 @@ const { response } = require('../helpers/standardResponse')
 const { getUserRole } = require('../models/user')
 const { APP_URL } = process.env
 
-const itemPicture = require('../helpers/upload').single('img_link')
+// const itemPicture = require('../helpers/upload').single('img_link')
+const upload = require('../helpers/upload')
 
 exports.createProduct = (req, res) => {
   getUserRole(req.authUser.id, (err, results) => {
     if (err) response(res, 401, false, 'internal server error')
     if (results[0].role === 'Admin') {
-      itemPicture(req, res, err => {
-        if (err) throw err
-        req.body.img_link = `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}`
-        productModel.createProduct(req.body, (err, results) => {
-          if (err) throw err
-          if (results.affectedRows) {
-            response(res, 200, true, 'Products created succsessfully')
-          } else {
-            response(res, 401, false, 'Failed to created products')
-          }
-        })
+      upload.uploadFilterProduct(req, res, err => {
+        if (err) {
+          response(res, 401, false, 'an errors ocured')
+        } else {
+          req.body.img_link = req.file?`${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}`: null
+          productModel.createProduct(req.body, (err, results) => {
+            if (err) throw err
+            if (results.affectedRows) {
+              response(res, 200, true, 'Products created succsessfully')
+            } else {
+              response(res, 401, false, 'Failed to created products')
+            }
+          })
+        }
       })
     } else {
       return response(res, 401, false, 'You dont have permission to accses this resource')
