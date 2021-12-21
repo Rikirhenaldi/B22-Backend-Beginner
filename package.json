@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "nyc mocha tests/**/*.test.js -r dotenv/config"
+    "test": "nyc mocha tests/**/*.test.js -r dotenv/config",
     "start"​: ​"​node index.js​"
   },
   "keywords": [],
