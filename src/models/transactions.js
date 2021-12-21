@@ -1,5 +1,7 @@
 const connection = require('../helpers/db')
 const table = 'transactions'
+const { promisify } = require('util')
+const execPromise = promisify(connection.query).bind(connection)
 
 exports.createTransaction = (data, cb) => {
   connection.query(`
@@ -15,11 +17,12 @@ exports.createProductTransaction = (data, cb) => {
   `, [data.name, data.price, data.variants, data.amount, data.id_products, data.id_transaction], cb)
 }
 
-exports.deleteHistory = (id, cb) => {
-  db.query(`
-  DELETE FROM transactions WHERE id = ?
-  `, [id], cb)
+exports.deleteHistory = (id) => {
+  return execPromise(`
+  DELETE FROM ${table} WHERE id = ?
+  `, [id])
 }
+
 
 // exports.getHistoryTransaction = (id, cb) => {
 //   connection.query(`
@@ -37,6 +40,14 @@ exports.getHistoryTransaction = (id, cb) => {
   FROM ${table}
   WHERE ${table}.id_user=?
   `, [id], cb)
+}
+
+exports.getHistoryTransactionById = (id) => {
+  return execPromise(`
+  SELECT transactions.id as id_payment, transactions.code, transactions.total, transactions.shipping_address,transactions.id_user
+  FROM ${table}
+  WHERE ${table}.id=?
+  `,[id])
 }
 
 exports.getDetailHistoryPay = (id, cb) => {

@@ -2,7 +2,7 @@ const { response } = require('../helpers/standardResponse')
 const { codeTransaction } = require('../helpers/transactions')
 const { getProductsById } = require('../models/products')
 const { getProfile, updateProfile, updateProfilePatch, changePassword } = require('../models/profile')
-const { createTransaction, createProductTransaction, getHistoryTransaction, getDetailHistoryPay } = require('../models/transactions')
+const { createTransaction, createProductTransaction, getHistoryTransaction, getDetailHistoryPay, getHistoryTransactionById, deleteHistory } = require('../models/transactions')
 const { getUserById } = require('../models/user')
 const { APP_TRANSACTION_PREFIX } = process.env
 const timeHelper = require('../helpers/date')
@@ -196,4 +196,15 @@ exports.userDetailHistoryPayment = (req, res) => {
       return response(res, 402, false, 'You dont have permission to accsess this resource, please login first !', results)
     }
   })
+}
+
+exports.deleteHistory = async (req, res) => {
+  const { id } = req.params
+  const results = await getHistoryTransactionById(id)
+  if (results.length > 0) {
+    await deleteHistory(id)
+    return response(res, 200, true, 'history has been deleted!')
+  } else {
+    return response(res, 404, false, 'history not found!')
+  }
 }

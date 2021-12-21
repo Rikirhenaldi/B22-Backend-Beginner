@@ -27,7 +27,7 @@ exports.getMessage = (data, cb) => {
 
 exports.getMessageMobile = (data, cb) => {
   db.query(`
-  SELECT chats.id, chats.img message, sender, recipient, u1.name as senderName, u1.img as senderImg, u2.name as recipientName, u2.img as recipientImg FROM ${table} 
+  SELECT chats.id, chats.img, message, sender, recipient, u1.name as senderName, u1.img as senderImg, u2.name as recipientName, u2.img as recipientImg FROM ${table} 
   LEFT JOIN users u1 ON u1.phoneNumber = chats.sender
   LEFT JOIN users u2 ON u2.phoneNumber = chats.recipient
   WHERE chats.sender IN (? ,?) AND chats.recipient IN (?, ?)
@@ -73,7 +73,6 @@ exports.updateIsLatest = (data, cb) => {
   console.log('ini data masuk ke query', data)
 }
 
-
 exports.updatePullMessage = (data, cb) => {
   db.query(`
   UPDATE ${table} SET deletedAt=?
@@ -97,7 +96,7 @@ exports.searchAndsortUsers = (cond, limit, offset, page, cb) => {
   ORDER BY users.name ASC
   LIMIT ${limit} OFFSET ${offset}
   `, [cond, limit, offset], cb)
-  console.log(data);
+  console.log(data)
 }
 
 exports.getUsersCount = (cond, cb) => {
