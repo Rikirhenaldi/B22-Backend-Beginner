@@ -47,8 +47,13 @@ app.get('/', (req, res) => {
   return res.json(data)
 })
 
-server.listen(PORT, () => {
-  console.log(`App runing on port ${PORT}`)
-})
+// server.listen(process.env.PORT || 8080, () => {
+//   console.log(`App runing on port ${PORT}`)
+// })
+
+
+server.listen(process.env.PORT || 8080, function(){
+  console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
+});
 
 // SELECT items.id, items.name, categories.id as category_id, categories.name as category_name FROM items LEFT JOIN item_categories ON item_categories.item_id = items.id LEFT JOIN categories ON item_categories.category_id = categories.id WHERE categories.id = 1
