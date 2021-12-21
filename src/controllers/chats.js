@@ -223,23 +223,26 @@ exports.searchingUsers = (req, res) => {
       // return response(res, 200, true, 'list of users', results)
       if (results.length > 0) {
         chatModels.getUsersCount(cond, (err, resultCount, _fields) => {
-          if (err) throw err
-          const totalData = resultCount[0].count
-          const totalPage = Math.ceil(totalData / limit)
-          pageInfo.totalData = totalData
-          pageInfo.currentPage = page
-          pageInfo.totalPage = totalPage
-          pageInfo.limitData = limit
-          pageInfo.nextPage = page < totalPage ? `${APP_URL}/chats/searchinguser/?search=${cond}&page=${page + 1}` : null
-          pageInfo.prevPage = page > 1 ? `${APP_URL}/chats/searchinguser/?search=${cond}&page=${page - 1}` : null
-          const finalResults = results
-          console.log('ini results', results)
-          finalResults.map((user) => {
-            if (user.img !== null && !user.img.startsWith('http')) {
-              user.img = `${process.env.APP_URL}${user.img}`
-            }
-          })
-          return response(res, 200, true, 'List of users', finalResults, pageInfo)
+          if (err) {
+            return response(res, 401, false, 'an error occured')
+          } else {
+            const totalData = resultCount[0].count
+            const totalPage = Math.ceil(totalData / limit)
+            pageInfo.totalData = totalData
+            pageInfo.currentPage = page
+            pageInfo.totalPage = totalPage
+            pageInfo.limitData = limit
+            pageInfo.nextPage = page < totalPage ? `${APP_URL}/chats/searchinguser/?search=${cond}&page=${page + 1}` : null
+            pageInfo.prevPage = page > 1 ? `${APP_URL}/chats/searchinguser/?search=${cond}&page=${page - 1}` : null
+            const finalResults = results
+            console.log('ini results', results)
+            finalResults.map((user) => {
+              if (user.img !== null && !user.img.startsWith('http')) {
+                user.img = `${process.env.APP_URL}${user.img}`
+              }
+            })
+            return response(res, 200, true, 'List of users', finalResults, pageInfo)
+          }
         })
       } else {
         response(res, 401, false, 'an error occured on searching message query')

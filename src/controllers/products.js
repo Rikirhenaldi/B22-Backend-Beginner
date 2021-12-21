@@ -17,13 +17,16 @@ exports.createProduct = (req, res) => {
         if (err) {
           response(res, 401, false, 'an errors ocured')
         } else {
-          req.body.img_link = req.file?`${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}`: null
+          req.body.img_link = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
           productModel.createProduct(req.body, (err, results) => {
-            if (err) throw err
-            if (results.affectedRows) {
-              response(res, 200, true, 'Products created succsessfully')
+            if (err) {
+              return response(res, 401, false, 'an error occured on query')
             } else {
-              response(res, 401, false, 'Failed to created products')
+              if (results.affectedRows) {
+                return response(res, 200, true, 'Products created succsessfully')
+              } else {
+                return response(res, 401, false, 'Failed to created products')
+              }
             }
           })
         }
@@ -227,12 +230,15 @@ exports.searchingProducts = (req, res) => {
   const cond = req.query.search
   if (cond) {
     productModel.searchProduct(cond, (err, results, _fields) => {
-      if (err) throw err
-      return res.status(200).json({
-        succsess: true,
-        message: `List of Products from key ${cond}`,
-        results
-      })
+      if (err) {
+        return response(res, 401, false, 'an errors ocured')
+      } else {
+        return res.status(200).json({
+          succsess: true,
+          message: `List of Products from key ${cond}`,
+          results
+        })
+      }
     })
   } else {
     productModel.getProducts((err, results, _fields) => {
@@ -285,22 +291,25 @@ exports.searchingAndSortingProducts = (req, res) => {
   productModel.searchAndsortProduct(cond, limit, offset, page, col, type, (err, results, _fields) => {
     if (err) return console.log(err) && response(res, 500, false, 'Internal server errors')
     productModel.getProductsCount(cond, (err, resultCount, _fields) => {
-      if (err) throw err
-      const totalData = resultCount[0].count
-      const totalPage = Math.ceil(totalData / limit)
-      pageInfo.totalData = totalData
-      pageInfo.currentPage = page
-      pageInfo.totalPage = totalPage
-      pageInfo.limitData = limit
-      pageInfo.nextPage = page < totalPage ? `${APP_URL}/products?search=${cond}&col=${col}&page=${page + 1}` : null
-      pageInfo.prevPage = page > 1 ? `${APP_URL}/products?search=${cond}&col=${col}&page=${page - 1}` : null
-      const finalResults = results
-      finalResults.map((products) => {
-        if (products.img_link !== null && !products.img_link.startsWith('http')) {
-          products.img_link = `${process.env.APP_URL}${products.img_link}`
-        }
-      })
-      return response(res, 200, true, 'List of products', finalResults, pageInfo)
+      if (err) {
+        return response(res, 401, false, 'an errors ocured')
+      } else {
+        const totalData = resultCount[0].count
+        const totalPage = Math.ceil(totalData / limit)
+        pageInfo.totalData = totalData
+        pageInfo.currentPage = page
+        pageInfo.totalPage = totalPage
+        pageInfo.limitData = limit
+        pageInfo.nextPage = page < totalPage ? `${APP_URL}/products?search=${cond}&col=${col}&page=${page + 1}` : null
+        pageInfo.prevPage = page > 1 ? `${APP_URL}/products?search=${cond}&col=${col}&page=${page - 1}` : null
+        const finalResults = results
+        finalResults.map((products) => {
+          if (products.img_link !== null && !products.img_link.startsWith('http')) {
+            products.img_link = `${process.env.APP_URL}${products.img_link}`
+          }
+        })
+        return response(res, 200, true, 'List of products', finalResults, pageInfo)
+      }
     })
   })
 }

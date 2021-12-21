@@ -126,25 +126,28 @@ exports.UpdateUserProfilePatch = (req, res) => {
     if (!err) {
       if (results.length > 0) {
         userPicture(req, res, err => {
-          if (err) throw err
-          req.body.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
-          const key = Object.keys(req.body)
-          const firstColumn = key[0]
-          const updateData = { id, updated_at: timeHelper.date(), [firstColumn]: req.body[firstColumn] }
           if (err) {
-            return response(res, 402, false, 'You dont have permission to accsess this resource')
+            return response(res, 401, false, 'an errors occured')
           } else {
-            if (results.length > 0) {
-              if (key.length > 1) {
-                return response(res, 400, false, "System can't update more than one column")
-              } else {
-                updateProfilePatch(updateData, (err, results, _fields) => {
-                  if (err) {
-                    return response(res, 500, false, 'ann error occurred')
-                  } else {
-                    return response(res, 200, true, 'Profile Updated Partially Sucsessfully', results)
-                  }
-                })
+            req.body.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
+            const key = Object.keys(req.body)
+            const firstColumn = key[0]
+            const updateData = { id, updated_at: timeHelper.date(), [firstColumn]: req.body[firstColumn] }
+            if (err) {
+              return response(res, 402, false, 'You dont have permission to accsess this resource')
+            } else {
+              if (results.length > 0) {
+                if (key.length > 1) {
+                  return response(res, 400, false, "System can't update more than one column")
+                } else {
+                  updateProfilePatch(updateData, (err, results, _fields) => {
+                    if (err) {
+                      return response(res, 500, false, 'ann error occurred')
+                    } else {
+                      return response(res, 200, true, 'Profile Updated Partially Sucsessfully', results)
+                    }
+                  })
+                }
               }
             }
           }
