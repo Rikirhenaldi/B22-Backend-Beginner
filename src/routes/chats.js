@@ -6,9 +6,9 @@ route.get('/searchinguser/', searchingUsers)
 route.post('/createmessage', createMessage)
 route.get('/mobilechatroom/', chatRoomMobile)
 route.post('/sendmessage', sendMessage)
-route.post('/sendimage', sendMessageImage)
+route.post('/sendimage/', sendMessageImage)
 route.get('/chatroom/', chatRoom)
-route.get('/deletechat', deletedChatRoom)
+route.delete('/deletechats/', deletedChatRoom)
 route.get('/', getChatingList)
 
 module.exports = route

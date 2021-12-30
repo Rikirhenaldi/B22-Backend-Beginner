@@ -16,7 +16,7 @@ app.use(APP_UPDATE_ROUTE, express.static(APP_UPLOADS_PATH))
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:8080']
+    origin: ['http://localhost:3000', 'http://localhost:8080', "https://coffee-shop-app24.herokuapp.com/"]
   }
 })
 io.on("connection", () => { console.log('connection socket exist')})

@@ -9,8 +9,8 @@ exports.createMessage = (data, cb) => {
 
 exports.createMessageImage = (data, cb) => {
   db.query(`
-  INSERT INTO ${table} ( img, sender, recipient, isLatest, deletedAt)
-  VALUES (?, ?, ?, ?, ?)`, [data.img, data.sender, data.recipient, data.isLatest = 1, data.deletedAt = 0], cb)
+  INSERT INTO ${table} ( img, message, sender, recipient, isLatest, deletedAt)
+  VALUES (?, ?, ?, ?, ?, ?)`, [data.img, data.message, data.sender, data.recipient, data.isLatest = 1, data.deletedAt = 0], cb)
 }
 
 exports.getMessage = (data, cb) => {
@@ -72,6 +72,15 @@ exports.updateIsLatest = (data, cb) => {
   `, [data.isLatest, data.sender, data.recipient, data.sender, data.recipient], cb)
   console.log('ini data masuk ke query', data)
 }
+
+exports.updateIsLatestImg = (data, cb) => {
+  db.query(`
+  UPDATE ${table} SET isLatest=?
+  WHERE (sender=? or sender=?) AND (recipient=? or recipient=?)
+  `, [data.isLatest, data.sender1, data.recipient1, data.sender2, data.recipient2], cb)
+  console.log('ini data masuk ke query', data)
+}
+
 
 exports.updatePullMessage = (data, cb) => {
   db.query(`

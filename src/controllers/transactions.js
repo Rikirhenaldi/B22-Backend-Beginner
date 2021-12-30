@@ -82,6 +82,20 @@ exports.getProfile = (req, res) => {
   })
 }
 
+exports.getProfileMobile = (req, res) => {
+  getProfile(req.authUser.id, (err, results) => {
+    if (err) {
+      return response(res, 401, false, "you don't have permission to accsess this resorce")
+    } else {
+      const users = results[0]
+      if (users.img !== null && !users.img.startsWith('http')) {
+        users.img = `${process.env.APP_URL}${users.img}`
+      }
+      return response(res, 200, true, 'Your Profile', results[0])
+    }
+  })
+}
+
 // const userPicture = require('../helpers/upload').single('img')
 const upload = require('../helpers/upload')
 

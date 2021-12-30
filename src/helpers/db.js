@@ -1,15 +1,19 @@
 const mysql = require('mysql2')
-const { DB_HOST, DB_NAME, DB_USER, DB_PASS, PORT } = process.env
+const { DB_HOST, DB_NAME, DB_USER, DB_PASS } = process.env
 const options = {
   host: DB_HOST,
-  port: PORT,
-  database: DB_NAME,
   user: DB_USER,
-  password: DB_PASS
+  password: DB_PASS,
+  database: DB_NAME
 }
 
 const connection = mysql.createConnection(options)
 
-connection.connect()
+connection.connect((error) => {
+  if (error) {
+    return console.log('ini eror kenapa', error)
+  }
+  console.log('You are now conected ...')
+})
 
 module.exports = connection

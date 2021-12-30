@@ -51,33 +51,37 @@ exports.sendMessage = (req, res) => {
 }
 
 exports.sendMessageImage = (req, res) => {
-  const data = req.body
+  const recipient = req.query.recipient
   chatModels.getUserSenderById(req.authUser.id, (err, results) => {
     if (err) {
       console.log(err)
       return response(res, 401, false, 'You must be login first')
     } else {
       const user = results[0]
-      const updateData = { isLatest: 0, sender: user.phoneNumber, recipient: data.recipient, sender: data.recipient, recipient: user.phoneNumber }
-      console.log(updateData)
-      chatModels.updateIsLatest(updateData, (err, results) => {
+      const noSender = results[0].phoneNumber
+      console.log('ini nosender', noSender)
+      const updateData = { isLatest: 0, sender1: noSender, recipient1: req.query.recipient, sender2: req.query.recipient, recipient2: noSender }
+      console.log('ini updatedata', updateData.sender)
+      chatModels.updateIsLatestImg(updateData, (err, results) => {
         if (err) {
           console.log(err)
           return response(res, 401, false, 'an error occurred')
         } else {
+          console.log('ini resultnya', results)
           upload.uploadFilterImg(req, res, err => {
             if (err) {
               response(res, 401, false, 'an errors ocured')
             } else {
-              data.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : null
-              const sendingData = { img: data.img, sender: user.phoneNumber, recipient: req.body.recipient }
+              req.body.img = req.file ? `${process.env.APP_UPLOADS_ROUTE}/${req.file.filename}` : req.body.img = null
+              const sendingData = { img: req.body.img, message: req.body.message, sender: user.phoneNumber, recipient: req.query.recipient }
               chatModels.createMessageImage(sendingData, (err, results) => {
                 if (err) {
                   console.log(err)
                   return response(res, 401, false, 'Failed to send message')
                 } else {
                   req.socket.emit(sendingData.recipient, {
-                    message: sendingData.img,
+                    message: sendingData.message,
+                    img: sendingData.img,
                     sender: sendingData.sender
                   })
                   return response(res, 200, true, 'message sended successfully', sendingData)
@@ -141,6 +145,9 @@ exports.chatRoom = (req, res) => {
               if (data.recipientImg !== null && !data.recipientImg.startsWith('http')) {
                 data.recipientImg = `${process.env.APP_URL}${data.recipientImg}`
               }
+              if (data.img !== null && !data.img.startsWith('http')) {
+                data.img = `${process.env.APP_URL}${data.img}`
+              }
             })
             response(res, 200, true, `Your chat with user ${data.recipient}`, user)
           } else {
@@ -175,11 +182,14 @@ exports.chatRoomMobile = (req, res) => {
               if (data.recipientImg !== null && !data.recipientImg.startsWith('http')) {
                 data.recipientImg = `${process.env.APP_URL}${data.recipientImg}`
               }
+              if (data.img !== null && !data.img.startsWith('http')) {
+                data.img = `${process.env.APP_URL}${data.img}`
+              }
             })
             response(res, 200, true, `Your chat with user ${data.recipient}`, user)
           } else {
-            console.log('ini eror', err)
-            response(res, 401, false, `Your dont have chat conversation with user ${data.recipient}`)
+            // console.log('ini eror', err)
+            response(res, 200, true, `lets start chat with user ${data.recipient}`)
           }
         }
       })
@@ -188,7 +198,7 @@ exports.chatRoomMobile = (req, res) => {
 }
 
 exports.deletedChatRoom = (req, res) => {
-  const data = req.body
+  const data = req.query
   chatModels.getUserSenderById(req.authUser.id, (err, results) => {
     if (err) {
       response(res, 401, false, 'an error occured')
