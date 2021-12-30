@@ -13,13 +13,14 @@ app.use(cors())
 app.use(APP_UPLOADS_ROUTE, express.static(APP_UPLOADS_PATH))
 app.use(APP_UPDATE_ROUTE, express.static(APP_UPLOADS_PATH))
 
-const server = require("http").createServer(app);
-const io = require("socket.io")(server, {
+const server = require('http').createServer(app)
+const io = require('socket.io')(server, {
   cors: {
-    origin: ['http://localhost:3000', 'http://localhost:8080', "https://coffee-shop-app24.herokuapp.com/"]
+    // origin: ['http://localhost:3000', 'http://localhost:8080', "https://coffee-shop-app24.herokuapp.com/"]
+    origin: ['http://localhost:3000', 'https://coffee-shop-app24.herokuapp.com/']
   }
 })
-io.on("connection", () => { console.log('connection socket exist')})
+io.on('connection', () => { console.log('connection socket exist') })
 
 const socket = require('./src/middlewares/socket')
 app.use(socket(io))
@@ -50,7 +51,6 @@ app.get('/', (req, res) => {
 server.listen(process.env.PORT || 8080, () => {
   console.log(`App runing on port ${process.env.PORT}`)
 })
-
 
 // server.listen(process.env.PORT || 3000, function(){
 //   console.log("Express server listening on port %d in %s mode", this.address().port, app.settings.env);
